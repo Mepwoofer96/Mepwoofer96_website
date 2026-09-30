@@ -275,3 +275,27 @@ p { margin: 0 0 1em; max-width: 62ch; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- Project link button ---------- */
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: 500 0.85rem var(--font-mono);
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+}
+.project-link:hover { background: var(--ink); color: var(--bg); }
+.project-link svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+
+/* ---------- Contact social buttons ---------- */
+.social { gap: 0.75rem 1rem; margin-top: 2rem; }
+.social-btn { display: inline-flex; align-items: center; gap: 0.6rem; }
+.social-btn svg { width: 1.15rem; height: 1.15rem; fill: currentColor; }

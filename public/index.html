@@ -1,266 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tommy Boston | Aerospace Engineering Portfolio</title>
-  <meta name="description" content="Portfolio of Tommy Boston, aerospace engineering student at Embry-Riddle: projects, experience, and skills.">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>CRT Test2</title>
+  <link rel="icon" type="png" href="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style3.css">
+
 </head>
-<body>
-  <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header">
-    <div class="container">
-      <a class="brand" href="index.html">Tommy Boston</a>
-      <nav class="nav" aria-label="Main">
-        <a href="index.html" aria-current="page">Home</a>
-        <a href="#projects">Projects</a>
-        <a href="#experience">Experience</a>
-        <a href="#skills">Skills</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </header>
+<body class="background">
 
-  <main id="main">
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <h1>Aerospace student who builds the hardware and the code.</h1>
-          <p class="hero-lede">I design, build and test: from SolidWorks frames and pressure vessels to circuits and firmware.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#projects">View projects</a>
-            <a class="btn" href="#contact">Contact me</a>
-          </div>
-          <div class="dim" aria-hidden="true"><span>B.S. Aerospace Engineering, 2027</span></div>
-        </div>
-
-        <aside class="spec" aria-label="Summary">
-          <div class="spec-title">SPEC SHEET</div>
-          <dl>
-            <div class="spec-row"><dt>Degree</dt><dd>B.S. Aerospace Engineering</dd></div>
-            <div class="spec-row"><dt>Focus</dt><dd>Astronautical Engineering</dd></div>
-            <div class="spec-row"><dt>School</dt><dd>Embry-Riddle, Prescott AZ</dd></div>
-            <div class="spec-row"><dt>Licenses</dt><dd>Ham Radio Technician Class, CATIA Assembly</dd></div>
-            <div class="spec-row"><dt>Software</dt><dd>SolidWorks, CATIA, ANSYS, MATLAB, Python, C/C++</dd></div>
-            <div class="spec-row"><dt>Hardware</dt><dd>Embedded systems, circuit design, RF, prototyping</dd></div>
-          </dl>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section" id="projects">
-      <div class="container">
-        <div class="section-head"><span class="zone" aria-hidden="true">A</span><h2>Projects</h2></div>
-        <div class="bom">
-          <div class="bom-head" aria-hidden="true"><span>ID</span><span>Project</span><span>Area</span><span>Dates</span></div>
-          <ul class="project-list">
-            <li class="project-row static">
-              <span class="project-id">P-01</span>
-              <div>
-                <h3>Inventory system</h3>
-                <p>Building a stock-tracking system from a bare microcontroller up to a full autonomous board.</p>
-                <a class="project-link" href="https://github.com/Mepwoofer96/ESP32-inventory-system" target="_blank" rel="noopener">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                View on GitHub
-                </a>
-              </div>
-              <ul class="tags"><li class="tag">Microcontroller</li><li class="tag">Hardware</li><li class="tag">Software</li></ul>
-              <span class="project-year">2025–now</span>
-          </li>
-            <li class="project-row static">
-              <span class="project-id">P-02</span>
-              <div>
-                <h3>Home server</h3>
-                <p>Self-hosted server on Debian running Jellyfin, Immich and an MQTT broker in Docker, with a six-VLANn network designed on Cisco switches and remote management over Tailscale.</p>
-              </div>
-              <ul class="tags"><li class="tag">Debian</li><li class="tag">Docker</li><li class="tag">Networking</li><li class="tag">Linux</li></ul>
-              <span class="project-year">2026-Current</span>
-            </li>
-            <li class="project-row static">
-              <span class="project-id">P-03</span>
-              <div>
-                <h3>Weather Station</h3>
-                <p>Hyperlocal multi-sensor weather station on an ESP32, with interrupt-driven wind sensing and a non-blocking firmware design. Sensor data is sent over MQTT to a home server and displayed on a Grafana dashboard.</p>
-                <a class="project-link" href="https://github.com/Mepwoofer96/Custom-Weather-Station" target="_blank" rel="noopener">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                View on GitHub
-                </a>
-              </div>
-              <ul class="tags"><li class="tag">ESP32</li><li class="tag">C/C++</li><li class="tag">MQTT</li><li class="tag">Python</li><li class="tag">Grafana</li></ul>              <span class="project-year">2026-Current</span>
-            </li>
-              <li class="project-row static">
-              <span class="project-id">P-04</span>
-              <div>
-                <h3>Tracking Ground Station</h3>
-                  <p>Ground station for the ERAU ASCEND! team. A ground station antenna that tracks a weather balloon payload throughout it's journey in the sky. Receives data from the payload the whole duration of the mission.</p>
-                  <a class="project-link" href="https://github.com/AscendERAU1/ASCEND-GS" target="_blank" rel="noopener">
-                  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                  View on GitHub
-                  </a>
-              </div>
-              <ul class="tags"><li class="tag">Arduino</li><li class="tag">C/C++</li><li class="tag">RF data trasnfer</li><li class="tag">Team project</li></ul>
-              <span class="project-year">2025–now</span>
-            </li>
-            <li class="project-row static">
-              <span class="project-id">P-05</span>
-              <div>
-                <h3>Sound system</h3>
-                <p>Designed a full circuit around an amplifier for speakers, then tested it for echo, reverb and other factors.</p>
-              </div>
-              <ul class="tags"><li class="tag">Circuit design</li><li class="tag">Testing</li></ul>
-              <span class="project-year">2025</span>
-            </li>
-            <li class="project-row static">
-              <span class="project-id">P-06</span>
-              <div>
-                <h3>Custom built vehicle</h3>
-                <p>Modeled a custom vehicle with a full frame in SolidWorks, working with a small team to meet specifications.</p>
-              </div>
-              <ul class="tags"><li class="tag">SolidWorks</li><li class="tag">Team design</li></ul>
-              <span class="project-year">2025</span>
-            </li>
-            <li class="project-row static">
-              <span class="project-id">P-07</span>
-              <div>
-                <h3>Weather antenna</h3>
-                <p>Hand-built an antenna on a small budget with minimal tools, designed to observe NOAA satellites.</p>
-              </div>
-              <ul class="tags"><li class="tag">Antenna design</li><li class="tag">Radio</li></ul>
-              <span class="project-year">2025</span>
-            </li>
-            <li class="project-row static">
-              <span class="project-id">P-08</span>
-              <div>
-                <h3>High pressure launcher</h3>
-                <p>Designed a container to hold high pressure and checked it for stress and expanding pressure forces.</p>
-              </div>
-              <ul class="tags"><li class="tag">Stress analysis</li><li class="tag">Pressure vessel</li></ul>
-              <span class="project-year">2024–25</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="experience">
-      <div class="container">
-        <div class="section-head"><span class="zone" aria-hidden="true">B</span><h2>Experience</h2></div>
-
-        <article class="entry">
-          <div>
-            <h3>Software Engineer / Associate Electrician</h3>
-            <div class="entry-meta">Light it Up LLC, Fairplay, CO</div>
-          </div>
-          <div class="entry-dates">05/25 – Present</div>
-          <ul>
-            <li>Constructing an inventory system from scratch, covering both software and hardware.</li>
-            <li>Work on site alongside professionals.</li>
-            <li>Collaborate on electrical schematics with professionals.</li>
-          </ul>
-        </article>
-        <article class="entry">
-          <div>
-            <h3>Lead Engineer / Ground Station Team Lead</h3>
-            <div class="entry-meta">ASCEND!, Prescott, AZ</div>
-          </div>
-          <div class="entry-dates">06/25 – Present</div>
-          <ul>
-            <li>Taught and lead a team of undergraduates.</li>
-            <li>Created a tracking ground station antenna.</li>
-            <li>Active over the air data transfer from a payload in the sky.</li>
-          </ul>
-        </article>
-        <article class="entry">
-          <div>
-            <h3>Surveyor / Excavator</h3>
-            <div class="entry-meta">TCB Excavation, Frisco, CO</div>
-          </div>
-          <div class="entry-dates">06/16 – 08/23</div>
-          <ul>
-            <li>Operated a backhoe to finish jobs effectively.</li>
-            <li>Used multiple surveying tools with precision, reading and applying engineering plans.</li>
-            <li>Stayed composed in stressful, high-pressure situations.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section class="section" id="skills">
-      <div class="container two-col">
-        <div>
-          <div class="section-head"><span class="zone" aria-hidden="true">C</span><h2>Skills</h2></div>
-          <div class="skill-group">
-            <h3>Software</h3>
-            <ul class="skills" aria-label="Software skills">
-              <li class="tag">SolidWorks</li><li class="tag">CATIA</li><li class="tag">Fusion 360</li>
-              <li class="tag">ANSYS</li><li class="tag">MATLAB</li><li class="tag">Python</li>
-              <li class="tag">C</li><li class="tag">C++</li><li class="tag">Arduino</li>
-              <li class="tag">Linux</li><li class="tag">Bash</li><li class="tag">Git / GitHub</li>
-              <li class="tag">Docker</li><li class="tag">SQL</li><li class="tag">MQTT</li>
-              <li class="tag">Grafana</li><li class="tag">Lua</li><li class="tag">Microsoft Office</li>
-            </ul>
-          </div>
-          <div class="skill-group">
-            <h3>Hardware and trade</h3>
-            <ul class="skills" aria-label="Hardware and trade skills">
-              <li class="tag">Embedded systems (ESP32)</li><li class="tag">Circuit design</li><li class="tag">Electronics</li>
-              <li class="tag">Sensor interfacing (I2C, SPI)</li><li class="tag">Soldering</li><li class="tag">Prototyping</li>
-              <li class="tag">RF / antenna design</li><li class="tag">Licensed amateur radio operator (Technician class)</li><li class="tag">Radio repair</li>
-              <li class="tag">Networking (VLANs, Cisco switches)</li><li class="tag">IT</li><li class="tag">Repair</li>
-              <li class="tag">Electrician</li><li class="tag">Welding</li><li class="tag">Carpentry</li>
-              <li class="tag">Excavation</li><li class="tag">Surveying</li><li class="tag">Manufacturing</li>
-            </ul>
-          </div>
-        </div>
-
-        <div>
-          <div class="section-head"><span class="zone" aria-hidden="true">D</span><h2>Education</h2></div>
-          <article class="entry">
-            <div>
-              <h3>B.S. Aerospace Engineering</h3>
-              <div class="entry-meta">Embry-Riddle Aeronautical University, Prescott, AZ</div>
-              <p style="margin:0.5rem 0 0">Concentration: Aeronautical Engineering</p>
+  <div class="monitor">
+    <div class="crt">
+      <div class="screen">
+        <div class="terminal" id="term">
+          <div class="history" id="history"></div>
+            <div class="prompt">
+              <span class="ps">:&gt;</span>
+              <span class="typed" id="typed"></span><span class="cursor"></span>
+              <input id="input" class="capture" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="terminal input">
             </div>
-            <div class="entry-dates">2027</div>
-          </article>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="section" id="contact">
-      <div class="container">
-        <div class="section-head"><span class="zone" aria-hidden="true">E</span><h2>Contact</h2></div>
-        <p>Email is the fastest way to reach me. I'm based in Prescott, Arizona.</p>
-        <a class="contact-mail" href="mailto:tommybosjr@gmail.com">tommybosjr@gmail.com</a>
-        <ul class="social">
-          <li>
-            <a class="btn social-btn" href="https://github.com/Mepwoofer96" target="_blank" rel="noopener">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-              GitHub
-            </a>
-          </li>
-          <li>
-            <a class="btn social-btn" href="https://www.linkedin.com/in/tommy-boston-jr/" target="_blank" rel="noopener">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
-              LinkedIn
-            </a>
-          </li>
-        </ul>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div class="title-block">
-        <div><small>Drawn by</small><span>Tommy Boston</span></div>
-        <div><small>Sheet</small><span>1 of 1</span></div>
-        <div><small>Revision</small><span>A</span></div>
-        <div><small>Year</small><span>2026</span></div>
-      </div>
     </div>
-  </footer>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="dome" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+      <feImage id="domeMap" preserveAspectRatio="none" result="map"/>
+      <feDisplacementMap id="domeDisp" in="SourceGraphic" in2="map"
+                         scale="100" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+<script>
+  const map = document.getElementById('domeMap');
+  const disp = document.getElementById('domeDisp');
+  const screenEl = document.querySelector('.screen');
+  const STRENGTH = 0.07;   // how far the edges bow, as a fraction of screen size (try 0.02 to 0.08)
+
+  function buildDome() {
+    const w = screenEl.clientWidth, h = screenEl.clientHeight, m = Math.max(w, h);
+
+    // one gradient per axis; 128 = no shift, values rise or fall with the cube of the distance from center
+    const stops = (amp, ch) => Array.from({ length: 17 }, (_, i) => {
+      const u = i / 8 - 1;                                    // -1 .. 1 across the screen
+      const v = Math.round(255 * (0.5 + 0.5 * amp * u ** 3));
+      const rgb = ch === 'r' ? `${v},0,0` : `0,${v},0`;
+      return `<stop offset="${i / 16}" stop-color="rgb(${rgb})"/>`;
+    }).join('');
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256">
+      <defs>
+        <linearGradient id="x" x1="0" y1="0" x2="1" y2="0">${stops(w / m, 'r')}</linearGradient>
+        <linearGradient id="y" x1="0" y1="0" x2="0" y2="1">${stops(h / m, 'g')}</linearGradient>
+      </defs>
+      <rect width="256" height="256" fill="#000"/>
+      <rect width="256" height="256" fill="url(#x)"/>
+      <rect width="256" height="256" fill="url(#y)" style="mix-blend-mode:screen"/>
+    </svg>`;
+
+    map.setAttribute('href', 'data:image/svg+xml,' + encodeURIComponent(svg));
+    disp.setAttribute('scale', 2 * STRENGTH * m);
+  }
+
+  buildDome();
+  addEventListener('resize', buildDome);
+</script>
+<script type="text/plain" id="banner">
+                                                        ___                 __     ____                                  
+ /'\_/`\                                              /'___\              /'_ `\  /'___\                                 
+/\      \     __   _____   __  __  __    ___     ___ /\ \__/   __   _ __ /\ \L\ \/\ \__/       ___    ___     ___ ___    
+\ \ \__\ \  /'__`\/\ '__`\/\ \/\ \/\ \  / __`\  / __`\ \ ,__\/'__`\/\`'__\ \___, \ \  _``\    /'___\ / __`\ /' __` __`\  
+ \ \ \_/\ \/\  __/\ \ \L\ \ \ \_/ \_/ \/\ \L\ \/\ \L\ \ \ \_/\  __/\ \ \/ \/__,/\ \ \ \L\ \__/\ \__//\ \L\ \/\ \/\ \/\ \ 
+  \ \_\\ \_\ \____\\ \ ,__/\ \___x___/'\ \____/\ \____/\ \_\\ \____\\ \_\      \ \_\ \____/\_\ \____\ \____/\ \_\ \_\ \_\
+   \/_/ \/_/\/____/ \ \ \/  \/__//__/   \/___/  \/___/  \/_/ \/____/ \/_/       \/_/\/___/\/_/\/____/\/___/  \/_/\/_/\/_/
+                     \ \_\                                                                                               
+                      \/_/                                                                                               
+</script>
+<script>
+  const term    = document.getElementById('term');
+  const history = document.getElementById('history');
+  const typed   = document.getElementById('typed');
+  const input   = document.getElementById('input');
+  
+
+  term.addEventListener('click', () => input.focus());   // click anywhere to type
+  input.focus();
+
+  input.addEventListener('input', () => {
+    typed.textContent = input.value;                      // mirror the text next to the cursor
+  });
+
+// remove the oldest lines until everything fits on screen
+function trim() {
+  while (history.firstChild && term.scrollHeight > term.clientHeight) {
+    history.removeChild(history.firstChild);
+  }
+}
+
+addEventListener('resize', trim);   // shrinking the window drops lines too
+
+// add one line to the history
+function addLine(text) {
+  const line = document.createElement('div');
+  line.textContent = text;
+  history.appendChild(line);
+}
+
+// label = text shown, action = a URL string or a function to run on click
+function addLink(label, action) {
+  const row = document.createElement('div');
+  const el = document.createElement(typeof action === 'string' ? 'a' : 'button');
+  el.className = 'tlink';
+  el.textContent = '[ ' + label + ' ]';
+  if (typeof action === 'string') el.href = action;
+  else el.addEventListener('click', action);
+  row.appendChild(el);
+  history.appendChild(row);
+}
+
+function addArt(id) {
+  const box = document.createElement('div');
+  box.className = 'art';
+  box.textContent = document.getElementById(id).textContent.replace(/^\n|\s+$/g, '');
+  history.appendChild(box);
+}
+
+addArt('banner');
+addLine('WELCOME, GUEST.');
+addLine('TYPE "HELP" FOR COMMANDS.');
+addLine('Straight to portfolio:');
+addLink('PORTFOLIO', 'portfolio.html'); 
+trim();
+
+const files = {
+  'about.txt':   ['Mepwoofer96 Terminal v0.5.1', 'I forgor'],
+  'contact.txt': ['EMAIL: you@example.com'],
+  'projects/':   ['the'],                      // a trailing slash marks a folder; null means no contents
+};
+
+// word typed -> lines to print (edit these)
+const commands = {
+  help:  ['AVAILABLE COMMANDS:', '  help   about   date   clear   page   cat   ls   start'],
+  about: ['Mepwoofer96 Terminal v0.5.1', 'I forgor'],
+  date:  () => [new Date().toLocaleString()],   // a function runs each time, so the output can change
+  page: () => window.location.href = "test.html",
+  ls: () => Object.keys(files),
+  art: () => addArt('banner'),
+  links: () => {
+  addLine('SELECT A DESTINATION:');
+  addLink('PORTFOLIO', 'portfolio.html');                       // a string makes a real link
+  addLink('SAY HELLO', () => addLine('HELLO, VISITOR.'));  // a function runs on click
+},
+
+};
+
+input.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+
+  const raw = input.value;
+  const cmd = raw.trim().toLowerCase();         // "HELP " and "help" both match
+
+
+  input.value = '';                 // clear first, so an error later can't leave junk in the prompt
+  typed.textContent = '';
+
+  addLine(':> ' + raw);      // echo what was typed
+
+  const [name, ...args] = cmd.split(/\s+/);
+
+
+  if (name === 'clear') {
+    history.innerHTML = '';
+
+  } else if (name === 'cat') {
+    const f = files[args[0]];
+    if (f) f.forEach(addLine);
+    else addLine('cat: ' + (args[0] || '') + ': NO SUCH FILE');
+
+  } else if (name in commands) {
+    const out = commands[name];
+    const lines = typeof out === 'function' ? out() : out;
+    if (Array.isArray(lines)) lines.forEach(addLine);    
+
+  } else if (cmd) {
+    addLine('UNKNOWN COMMAND: ' + cmd.toUpperCase());
+    addLine('Type Help for useful commands');
+  }
+
+  input.value = '';
+  typed.textContent = '';
+  trim();
+});
+
+addEventListener('pageshow', e => {
+  if (e.persisted) {              // true only when the page came back from the cache
+    history.innerHTML = '';
+    input.value = '';
+    typed.textContent = '';
+    input.focus();
+    addArt('banner');
+    addLine('WELCOME, GUEST.');
+    addLine('TYPE "HELP" FOR COMMANDS.');
+    trim();
+  }
+});
+</script>
 </body>
-</html>

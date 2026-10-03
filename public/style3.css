@@ -163,3 +163,21 @@ body.background {
   line-height: 1.15;
   overflow: hidden;
 }
+
+
+.tlink {
+  font: inherit;
+  color: inherit;
+  text-shadow: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.tlink:hover, .tlink:focus-visible {
+  background: #33ff55;
+  color: #000;
+  text-shadow: none;
+  outline: none;
+}

@@ -109,6 +109,18 @@ function addLine(text) {
   history.appendChild(line);
 }
 
+// label = text shown, action = a URL string or a function to run on click
+function addLink(label, action) {
+  const row = document.createElement('div');
+  const el = document.createElement(typeof action === 'string' ? 'a' : 'button');
+  el.className = 'tlink';
+  el.textContent = '[ ' + label + ' ]';
+  if (typeof action === 'string') el.href = action;
+  else el.addEventListener('click', action);
+  row.appendChild(el);
+  history.appendChild(row);
+}
+
 function addArt(id) {
   const box = document.createElement('div');
   box.className = 'art';
@@ -135,6 +147,12 @@ const commands = {
   page: () => window.location.href = "test.html",
   ls: () => Object.keys(files),
   art: () => addArt('banner'),
+  links: () => {
+  addLine('SELECT A DESTINATION:');
+  addLink('PORTFOLIO', 'portfolio.html');                       // a string makes a real link
+  addLink('SAY HELLO', () => addLine('HELLO, VISITOR.'));  // a function runs on click
+},
+
 };
 
 input.addEventListener('keydown', e => {
@@ -181,6 +199,10 @@ addEventListener('pageshow', e => {
     input.value = '';
     typed.textContent = '';
     input.focus();
+    addArt('banner');
+    addLine('WELCOME, GUEST.');
+    addLine('TYPE "HELP" FOR COMMANDS.');
+    trim();
   }
 });
 </script>

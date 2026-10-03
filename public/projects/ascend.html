@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tommy Boston | Aerospace Engineering Portfolio</title>
+  <meta name="description" content="Portfolio of Tommy Boston, aerospace engineering student at Embry-Riddle: projects, experience, and skills.">
+  <link rel="stylesheet" href="../portfolio.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../index.html">Tommy Boston</a>
+      <nav class="nav" aria-label="Main">
+        <a href="../portfolio.html" aria-current="page">Home</a>
+        <a href="../portfolio.html#projects">Projects</a>
+        <a href="../portfolio.html#experience">Experience</a>
+        <a href="../portfolio.html#skills">Skills</a>
+        <a href="../portfolio.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+
+<div class="readme">
+  <div class="readme-bar">README.md</div>
+  <div class="readme-body" id="readme">Loading...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+<script>
+  const repo = 'AscendERAU1/ASCEND-GS';
+  const base = `https://raw.githubusercontent.com/${repo}/HEAD/`;
+
+  fetch(base + 'README.md')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(md => {
+      const box = document.getElementById('readme');
+      box.innerHTML = DOMPurify.sanitize(marked.parse(md));
+
+      // README images and links are usually relative ("images/pic.png"), so point them back at GitHub
+      box.querySelectorAll('img').forEach(img => {
+        img.src = new URL(img.getAttribute('src'), base).href;
+      });
+      box.querySelectorAll('a[href]').forEach(a => {
+        a.href = new URL(a.getAttribute('href'), `https://github.com/${repo}/blob/HEAD/`).href;
+        a.target = '_blank'; a.rel = 'noopener';
+      });
+    })
+    .catch(() => {
+      document.getElementById('readme').textContent = 'Could not load the README.';
+    });
+</script>
+  </main>

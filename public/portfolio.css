@@ -137,7 +137,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
   padding-block: 0.25rem; border-bottom: 2px solid transparent;
 }
 .nav a:hover { color: var(--ink); }
-.nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+.nav a[aria-current] { color: var(--ink); border-bottom-color: var(--accent); }
 
 /* ---------- Hero ---------- */
 .hero { padding-block: clamp(2.5rem, 7vw, 5.5rem); }
@@ -173,7 +173,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
 .spec dl { margin: 0; }
 .spec-row { display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; padding: 0.7rem 1rem; border-top: 1px solid var(--line); }
 .spec-row:first-child { border-top: 0; }
-.spec dt { font: 400 0.85rem var(--font-mono); color: var(--muted); }
+.spec dt { fapplication/vnd.githubont: 400 0.85rem var(--font-mono); color: var(--muted); }
 .spec dd { margin: 0; font-weight: 500; }
 .status { display: inline-flex; align-items: center; gap: 0.5rem; }
 .status::before { content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: #2fa84f; }
@@ -298,4 +298,68 @@ p { margin: 0 0 1em; max-width: 62ch; }
 /* ---------- Contact social buttons ---------- */
 .social { gap: 0.75rem 1rem; margin-top: 2rem; }
 .social-btn { display: inline-flex; align-items: center; gap: 0.6rem; }
-.social-btn svg { width: 1.15rem; height: 1.15rem; fill: currentColor; }
+.social-btn svg { width: 1.15rem; height: 1.15rem; fill: currentColor; }application/vnd.github
+
+
+/* ---------- README panel ---------- */
+.readme {
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.readme-bar {
+  padding: 0.5rem 1rem;
+  background: var(--ink);
+  color: var(--bg);
+  font: 500 0.85rem var(--font-mono);
+}
+.readme-body {
+  padding: clamp(1rem, 3vw, 2rem);
+  overflow-wrap: anywhere;
+}
+
+/* headings */
+.readme-body h1, .readme-body h2, .readme-body h3 { margin: 1.6em 0 0.5em; }
+.readme-body > :first-child { margin-top: 0; }
+.readme-body h1 { font-size: var(--step-2); }
+.readme-body h2 {
+  font-size: var(--step-1);
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--ink);
+}
+.readme-body h3 { font-size: 1.1rem; }
+
+/* text and lists */
+.readme-body p, .readme-body li { max-width: 70ch; }
+.readme-body ul, .readme-body ol { padding-left: 1.4rem; }
+.readme-body li + li { margin-top: 0.25rem; }
+.readme-body hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+/* code */
+.readme-body code {
+  font: 400 0.85em var(--font-mono);
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+}
+.readme-body pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);   /* orange edge, like the nav underline */
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+}
+.readme-body pre code { padding: 0; border: 0; background: none; font-size: 0.85rem; }
+
+/* quotes, images, tables */
+.readme-body blockquote {
+  margin: 1.2rem 0;
+  padding: 0.2rem 1rem;
+  border-left: 4px solid var(--line);
+  color: var(--muted);
+}
+.readme-body img { max-width: 100%; height: auto; border: 1px solid var(--line); }
+.readme-body table { border-collapse: collapse; display: block; overflow-x: auto; }
+.readme-body th, .readme-body td { padding: 0.5rem 0.8rem; border: 1px solid var(--line); text-align: left; }
+.readme-body th { background: var(--ink); color: var(--bg); font: 500 0.85rem var(--font-mono); }

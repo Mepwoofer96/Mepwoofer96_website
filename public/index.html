@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CRT Test2</title>
-  <link rel="icon" type="png" href="">
+  <title>Mepwoofer96</title>
+  <link rel="icon" type="png" href="racc.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style3.css">
+  <link rel="stylesheet" href="crtstyle.css">
 
 </head>
 
@@ -16,13 +16,9 @@
       <div class="screen">
         <div class="terminal" id="term">
           <div class="history" id="history"></div>
-            <div class="prompt">
-              <span class="ps">:&gt;</span>
-              <span class="typed" id="typed"></span><span class="cursor"></span>
-              <input id="input" class="capture" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="terminal input">
-            </div>
-          </div>
+          <div class="prompt"><span class="ps">:&gt;</span><span class="typed" id="typed"></span><span class="cursor"></span><input id="input" class="capture" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="terminal input"></div>
         </div>
+      </div>
     </div>
   </div>
 
@@ -38,7 +34,7 @@
   const map = document.getElementById('domeMap');
   const disp = document.getElementById('domeDisp');
   const screenEl = document.querySelector('.screen');
-  const STRENGTH = 0.07;   // how far the edges bow, as a fraction of screen size (try 0.02 to 0.08)
+  const STRENGTH = 0.07;   // how far the edges bow, as a fraction of screen size
 
   function buildDome() {
     const w = screenEl.clientWidth, h = screenEl.clientHeight, m = Math.max(w, h);
@@ -84,9 +80,11 @@
   const history = document.getElementById('history');
   const typed   = document.getElementById('typed');
   const input   = document.getElementById('input');
-  
 
-  term.addEventListener('click', () => input.focus());   // click anywhere to type
+  // click or tap anywhere to type (but tapping a link/button shouldn't pop the keyboard)
+  term.addEventListener('click', e => {
+    if (!e.target.closest('.tlink')) input.focus();
+  });
   input.focus();
 
   input.addEventListener('input', () => {
@@ -101,6 +99,18 @@ function trim() {
 }
 
 addEventListener('resize', trim);   // shrinking the window drops lines too
+
+// keep the whole terminal above the on-screen keyboard
+if (window.visualViewport) {
+  const fit = () => {
+    if (visualViewport.scale > 1) return;            // ignore pinch-zoom
+    document.documentElement.style.setProperty('--app-h', visualViewport.height + 'px');
+    scrollTo(0, 0);
+    trim();
+  };
+  visualViewport.addEventListener('resize', fit);
+  fit();
+}
 
 // add one line to the history
 function addLine(text) {
@@ -121,18 +131,25 @@ function addLink(label, action) {
   history.appendChild(row);
 }
 
+// banner: ASCII art on wide screens, a plain-text fallback on phones (CSS picks which one shows)
 function addArt(id) {
   const box = document.createElement('div');
   box.className = 'art';
   box.textContent = document.getElementById(id).textContent.replace(/^\n|\s+$/g, '');
   history.appendChild(box);
+
+  const small = document.createElement('div');
+  small.className = 'art-small';
+  small.textContent = 'MEPWOOFER96';
+  history.appendChild(small);
 }
 
 addArt('banner');
 addLine('WELCOME, GUEST.');
 addLine('TYPE "HELP" FOR COMMANDS.');
-addLine('Straight to portfolio:');
-addLink('PORTFOLIO', 'portfolio.html'); 
+if (matchMedia('(pointer: coarse)').matches) addLine('TAP THE SCREEN TO TYPE.');
+addLine('LINK TO PORTFOLIO:');
+addLink('PORTFOLIO', 'portfolio.html');
 trim();
 
 const files = {
@@ -150,11 +167,14 @@ const commands = {
   ls: () => Object.keys(files),
   art: () => addArt('banner'),
   links: () => {
-  addLine('SELECT A DESTINATION:');
-  addLink('PORTFOLIO', 'portfolio.html');                       // a string makes a real link
-  addLink('SAY HELLO', () => addLine('HELLO, VISITOR.'));  // a function runs on click
-},
-
+    addLine('SELECT A DESTINATION:');
+    addLink('PORTFOLIO', 'portfolio.html');                       // a string makes a real link
+    addLink('SAY HELLO', () => addLine('HELLO, VISITOR.'));       // a function runs on click
+  },
+  portfolio: () => {
+    addLine('OPENING PORTFOLIO...');
+    setTimeout(() => { window.location.href = 'portfolio.html'; }, 600);
+  },
 };
 
 input.addEventListener('keydown', e => {
@@ -163,14 +183,12 @@ input.addEventListener('keydown', e => {
   const raw = input.value;
   const cmd = raw.trim().toLowerCase();         // "HELP " and "help" both match
 
-
   input.value = '';                 // clear first, so an error later can't leave junk in the prompt
   typed.textContent = '';
 
-  addLine(':> ' + raw);      // echo what was typed
+  addLine(':> ' + raw);             // echo what was typed
 
   const [name, ...args] = cmd.split(/\s+/);
-
 
   if (name === 'clear') {
     history.innerHTML = '';
@@ -183,7 +201,7 @@ input.addEventListener('keydown', e => {
   } else if (name in commands) {
     const out = commands[name];
     const lines = typeof out === 'function' ? out() : out;
-    if (Array.isArray(lines)) lines.forEach(addLine);    
+    if (Array.isArray(lines)) lines.forEach(addLine);
 
   } else if (cmd) {
     addLine('UNKNOWN COMMAND: ' + cmd.toUpperCase());
@@ -204,8 +222,10 @@ addEventListener('pageshow', e => {
     addArt('banner');
     addLine('WELCOME, GUEST.');
     addLine('TYPE "HELP" FOR COMMANDS.');
+    if (matchMedia('(pointer: coarse)').matches) addLine('TAP THE SCREEN TO TYPE.');
     trim();
   }
 });
 </script>
 </body>
+</html>

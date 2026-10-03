@@ -3,18 +3,19 @@ body.background {
   background: #000;
   display: grid;
   place-items: center;
-  height: 100dvh;             
-  perspective: 1400px;  
+  height: var(--app-h, 100dvh);   /* the script keeps this equal to the visible area (keyboard-aware) */
+  overflow: hidden;
+  overscroll-behavior: none;
+  perspective: 1400px;
 }
 
 .monitor {
   width: 100vw;
-  height: 100dvh;
+  height: var(--app-h, 100dvh);
   box-sizing: border-box;
   padding: 2.5vmin;               /* vmin = 1% of the smaller screen side, so the bezel stays even */
-  border-radius: 4vmin;
-  container-type: inline-size;             /* children can size from the monitor's width */
-  border-radius: 0cqw;
+  border-radius: 0;
+  container-type: inline-size;    /* children can size from the monitor's width */
   background: linear-gradient(145deg, #4a4f4a, #2a2d2a 50%, #1a1c1a);
   box-shadow:
     inset 0 0 0 2px #5c615c,             /* thin highlight on the outer edge */
@@ -37,17 +38,15 @@ body.background {
     0 0 0 .6cqw #111,
     0 0 0 .8cqw #3a3e3a;
 }
+
 /* the picture: this layer gets warped */
 .screen {
-
   position: absolute;
-  inset: -3%;                      /* 6% bigger on every side than the glass */
-  box-sizing: border-box;
-  padding: calc(3cqw + 5.6dvh) 0;  
+  inset: -3%;                      /* bigger than the glass so the warp's empty edge band is clipped off */
   box-sizing: border-box;
   padding: 3cqw 0;
   filter: url(#dome);
-  animation: flicker 6s infinite;     /* flicker lives here now, not on h1/a */
+  animation: flicker 6s infinite;
 
   color: #33ff55;
   font-family: "Courier New", monospace;
@@ -63,12 +62,10 @@ body.background {
   align-items: center;
 }
 
-
-
 .screen p {
-  margin: 0;                /* browsers add default side margins to p */
+  margin: 0;
   width: 100%;
-  text-align: justify;      /* spreads each line out so it touches both edges */
+  text-align: justify;
 }
 
 /* vignette + scanlines, drawn over the warped picture */
@@ -93,9 +90,6 @@ body.background {
   pointer-events: none;
   background: radial-gradient(ellipse 60% 40% at 30% 15%, rgba(255, 255, 255, .10), transparent 70%);
 }
-.crt a { align-self: center; }   /* keeps the Hello button centered */
-.crt a { color: inherit; text-decoration: none; border: 2px solid currentColor; padding: .1em .6em; margin-top: 1rem; }
-.crt a:hover { background: #33ff55; color: #000; text-shadow: none; }
 
 @keyframes scanlines {
   from { background-position: 0 0, 0 0; }
@@ -111,6 +105,7 @@ body.background {
   .crt::after, .screen { animation: none; }
 }
 
+/* ---------- terminal ---------- */
 .terminal {
   position: relative;
   width: 100%;
@@ -120,11 +115,13 @@ body.background {
   overflow: hidden;              /* anything that doesn't fit is clipped, and the script trims it */
   text-align: left;
   cursor: text;
-  font-size: 2.2cqw;
+  font-size: max(14px, 2.2cqw);  /* same as before on desktop, never below 14px on a phone */
   line-height: 1.3;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;    /* no double-tap zoom */
 }
 
-.history { }                     /* no flex, no scrolling: it's just a stack above the prompt */
+.history { }                     /* just a stack above the prompt */
 .history div { white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .prompt {
@@ -139,6 +136,7 @@ body.background {
   width: .6ch;
   height: 1.1em;
   margin-left: 1px;
+  vertical-align: -0.15em;
   background: currentColor;
   animation: blink 1s steps(1) infinite;
 }
@@ -148,14 +146,14 @@ body.background {
 .capture {
   position: absolute;
   left: 0;
-  bottom: 0;
+  top: 0;                /* at the top, mobile browsers never scroll the page to reveal it */
   width: 1px;
   height: 1px;
   opacity: 0;
   border: 0;
   padding: 0;
+  font-size: 16px;       /* anything smaller makes iOS zoom in when the input is focused */
 }
-
 
 .history .art {
   white-space: pre;      /* never wrap, keep every space */
@@ -163,7 +161,7 @@ body.background {
   line-height: 1.15;
   overflow: hidden;
 }
-
+.art-small { display: none; }   /* plain-text banner, shown on phones only */
 
 .tlink {
   font: inherit;
@@ -175,9 +173,43 @@ body.background {
   cursor: pointer;
   text-decoration: none;
 }
-.tlink:hover, .tlink:focus-visible {
+.tlink:focus-visible {
   background: #33ff55;
   color: #000;
   text-shadow: none;
   outline: none;
+}
+/* the box around real links, like before (use .tlink instead of a.tlink to box the buttons too) */
+a.tlink {
+  border: 2px solid currentColor;
+  padding: .1em .6em;
+}
+
+/* hover only where a real hover exists, so a tap doesn't leave a button stuck highlighted */
+@media (hover: hover) {
+  .tlink:hover {
+    background: #33ff55;
+    color: #000;
+    text-shadow: none;
+  }
+}
+
+/* ---------- phones and touch screens (keep these last) ---------- */
+@media (max-width: 700px), (pointer: coarse) {
+  .screen {
+    filter: none;       /* drop the SVG dome warp */
+    inset: 0;           /* the oversize layer was only there to hide the warp's edge band */
+    text-shadow: 0 0 2px #33ff55, 0 0 8px rgba(51, 255, 85, .6);   /* lighter glow */
+  }
+  .crt::after { animation: none; }   /* static scanlines, easier on the battery */
+  .crt { border-radius: 5vmin; }     /* the 6% / 10% corners are huge on a tall screen */
+
+  /* let long commands wrap instead of running off the edge */
+  .prompt { display: block; white-space: normal; }
+  .typed { white-space: pre-wrap; overflow-wrap: anywhere; }
+}
+
+@media (max-width: 600px) {
+  .history .art { display: none; }
+  .history .art-small { display: block; font-weight: bold; letter-spacing: .1em; }
 }

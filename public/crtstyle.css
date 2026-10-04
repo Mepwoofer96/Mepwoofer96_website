@@ -246,15 +246,18 @@ body.background {
 
 @media (max-width: 600px) {
   .history .art { display: none; }
-  .history .art-small {
-    display: block;
-    font-size: calc(150cqw / 59);   /* 59 = columns in the banner */
-    line-height: 1;                 /* 1, so the half blocks (▀ ▄) meet between rows */
-    letter-spacing: 0;
-    font-weight: normal;
-    white-space: pre;
-    overflow: hidden;
-  }
+.history .art-small {
+  display: block;
+  font-family: ui-monospace, Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-size: 2.5vw;                  /* fallback for browsers without cqw */
+  font-size: calc(150cqw / 59);      /* 59 = columns in the banner */
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: normal;
+  white-space: pre;
+  overflow: hidden;
+  text-shadow: 0 0 2px #33ff55;      /* tight glow so the block shapes stay readable */
+}
 }
 
 

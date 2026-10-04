@@ -142,15 +142,13 @@ function addArt(id) {
   const box = document.createElement('div');
   box.className = 'art';
   box.textContent = document.getElementById(id).textContent.replace(/^\n|\s+$/g, '');
-  small.textContent = document.getElementById('banner-small').textContent.replace(/^\n|\s+$/g, '');
   history.appendChild(box);
 
   const small = document.createElement('div');
   small.className = 'art-small';
-  small.textContent = 'MEPWOOFER96';
+  small.textContent = document.getElementById('banner-small').textContent.replace(/^\n|\s+$/g, '');
   history.appendChild(small);
 }
-
 
 
 // ---------- startup sequence ----------

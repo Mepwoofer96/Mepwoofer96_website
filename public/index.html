@@ -315,8 +315,7 @@ input.addEventListener('keydown', e => {
 
   } else if (name === 'cat') {
     const f = files[args[0]];
-    const g = games[args[0]];
-    if (f) f.foreach(addline);
+    if (f) f.forEach(addLine);
     else addLine('cat: ' + (args[0] || '') + ': NO SUCH FILE');
 
   }else if (name === 'help'){

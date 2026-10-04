@@ -19,6 +19,7 @@
           <div class="prompt"><span class="ps">:&gt;</span><span class="typed" id="typed"></span><span class="cursor"></span><input id="input" class="capture" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="terminal input"></div>
         </div>
       </div>
+      <div class="flash" id="flash"></div>
     </div>
   </div>
 
@@ -144,25 +145,142 @@ function addArt(id) {
   history.appendChild(small);
 }
 
-addArt('banner');
-addLine('WELCOME, GUEST.');
-addLine('TYPE "HELP" FOR COMMANDS.');
-if (matchMedia('(pointer: coarse)').matches) addLine('TAP THE SCREEN TO TYPE.');
-addLine('LINK TO PORTFOLIO:');
-addLink('PORTFOLIO', 'portfolio.html');
-trim();
+
+
+// ---------- startup sequence ----------
+const flashEl  = document.getElementById('flash');
+const promptEl = document.querySelector('.prompt');
+
+let skip = false, bootStart = 0;
+const sleep = ms => new Promise(r => setTimeout(r, skip ? 0 : ms));
+const skipIt = e => { if (e.timeStamp > bootStart) skip = true; };   // any key or tap skips
+addEventListener('keydown', skipIt);
+addEventListener('pointerdown', skipIt);
+
+// the normal home screen (also used when the animation is skipped)
+function showHome() {
+  addArt('banner');
+  addLine('WELCOME, GUEST.');
+  addLine('TYPE "HELP" FOR COMMANDS.');
+  if (matchMedia('(pointer: coarse)').matches) addLine('TAP THE SCREEN TO TYPE.');
+  addLine('LINK TO PORTFOLIO:');
+  addLink('PORTFOLIO', 'portfolio.html');
+  trim();
+}
+
+function flashScreen() {
+  flashEl.classList.remove('go');
+  void flashEl.offsetWidth;          // forces a reflow so the animation can restart
+  flashEl.classList.add('go');
+}
+
+
+async function typeCmd(text) {
+  for (const ch of text) {
+    typed.textContent += ch;
+    await sleep(35 + Math.random() * 60);
+  }
+  await sleep(250);
+  typed.textContent = '';
+  addLine(':> ' + text);
+}
+
+const LOADING = [   // [label, how long it "takes" in ms]
+  ['KERNEL', 250], ['PHOSPHOR DRIVER', 400], ['SCANLINE GENERATOR', 250],
+  ['DOME CALIBRATION', 500], ['NETWORK', 300], ['PORTFOLIO INDEX', 350],
+];
+
+async function boot() {
+  skip = false; bootStart = performance.now();
+  input.disabled = true;
+  history.innerHTML = '';
+  promptEl.style.visibility = '';
+
+  await sleep(700);                         
+
+  await typeCmd('init');                   
+  addLine('CRT CONTROLLER ...... OK');
+  await sleep(300);
+  await typeCmd('boot --cold');
+  await sleep(400);
+
+  flashScreen();                          
+  history.innerHTML = '';
+  promptEl.style.visibility = 'hidden';
+  await sleep(400);
+
+  for (const [label, ms] of LOADING) {       
+    const row = document.createElement('div');
+    row.textContent = `LOADING ${label} ...`;
+    history.appendChild(row);
+    trim();
+    await sleep(ms);
+    row.textContent += ' [OK]';
+  }
+  await sleep(400);
+
+  history.innerHTML = '';                  
+  showHome();
+  promptEl.style.visibility = '';
+  term.classList.add('warmup');
+  await sleep(1800);
+  term.classList.remove('warmup');
+
+  input.disabled = false;
+  input.focus();
+  try { sessionStorage.setItem('booted', '1'); } catch {}
+}
+
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let seen = false;
+try { seen = !!sessionStorage.getItem('booted'); } catch {}
+
+if (reduced || seen) showHome();
+else boot();
+
+
 
 const files = {
   'about.txt':   ['Mepwoofer96 Terminal v0.5.1', 'I forgor'],
-  'contact.txt': ['EMAIL: you@example.com'],
-  'projects/':   ['the'],                      // a trailing slash marks a folder; null means no contents
+  'contact.txt': ['EMAIL: tommybosjr@gmail.com'],
+  'projects/':   [null],                      
+  'games/': ['dungeon-crawler.exe','home.exe','shadows-of-deceit.exe','your-big-day.exe']
 };
 
-// word typed -> lines to print (edit these)
+const games = {
+  'dungeon-crawler.exe':   'games/dungeon-crawler.html',
+  'home.exe':              'games/home_advanced.html',
+  'shadows-of-deceit.exe': 'games/shadows-of-deceit.html',
+  'your-big-day.exe':      'games/your_big_day.html',
+};
+
+function launch(name) {
+  addLine('To exit game press the back button on your browser')
+  addLine('OPENING ' + name + '...');
+  setTimeout(() => { window.location.href = games[name]; }, 2000);
+}
+
+const helps ={
+  'help': ['Prints out all of the availible commands.','type "help name" to find out more about the function "name"'],
+  'about': ['Prints information about the website'],
+  'date': ['Prints out the current date and time'],
+  'clear': ['Clears the window of all commands'],
+  'page': ['Takes you to a random page'],
+  'cat': ['cat is used in conjunction with ls','Use it as cat "file" after finding the files with the function "ls" '],
+  'ls': ['Shows all of the files in the current directory'],
+  'start': ['Shows the startup screen'],
+  'art': ['Prints the startup art of "mepwoofer96.com'],
+  'links': ['Prints links to the other pages of the website'],
+  'reboot':['Shows the boot animation'],
+  'games' :['lists games','type in run "name of game" to play game '],
+  'run'   :['Runs files, run "name of file"'],
+}
+
+// word typed -> lines to print
 const commands = {
-  help:  ['AVAILABLE COMMANDS:', '  help   about   date   clear   page   cat   ls   start'],
   about: ['Mepwoofer96 Terminal v0.5.1', 'I forgor'],
-  date:  () => [new Date().toLocaleString()],   // a function runs each time, so the output can change
+  date:  () => [new Date().toLocaleString()],   
   page: () => window.location.href = "test.html",
   ls: () => Object.keys(files),
   art: () => addArt('banner'),
@@ -175,18 +293,20 @@ const commands = {
     addLine('OPENING PORTFOLIO...');
     setTimeout(() => { window.location.href = 'portfolio.html'; }, 600);
   },
+  reboot:() => {boot();},
+  games: ['dungeon-crawler.exe   home.exe   shadows-of-deceit.exe   your-big-day.exe','Type run "name of game" to play a game'],
 };
 
 input.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
 
   const raw = input.value;
-  const cmd = raw.trim().toLowerCase();         // "HELP " and "help" both match
+  const cmd = raw.trim().toLowerCase();        
 
-  input.value = '';                 // clear first, so an error later can't leave junk in the prompt
+  input.value = '';                 
   typed.textContent = '';
 
-  addLine(':> ' + raw);             // echo what was typed
+  addLine(':> ' + raw);             
 
   const [name, ...args] = cmd.split(/\s+/);
 
@@ -195,8 +315,24 @@ input.addEventListener('keydown', e => {
 
   } else if (name === 'cat') {
     const f = files[args[0]];
-    if (f) f.forEach(addLine);
+    const g = games[args[0]];
+    if (f) f.foreach(addline);
     else addLine('cat: ' + (args[0] || '') + ': NO SUCH FILE');
+
+  }else if (name === 'help'){
+      const h = helps[args[0]];
+      if (h) h.forEach(addLine);
+      else{ 
+      addLine('AVAILABLE COMMANDS:');
+      addLine('  help   about   date   clear   page   cat   ls   start   art   links   games   reboot   run');
+      addLine('Type "help name" to find out more about the function "name"')
+      }
+  } else if (name === 'run') {
+    if (Object.hasOwn(games, args[0])) launch(args[0]);
+    else addLine('run: ' + (args[0] || '') + ': NO SUCH PROGRAM');
+
+} else if (Object.hasOwn(games, name)) {  
+  launch(name);
 
   } else if (name in commands) {
     const out = commands[name];
@@ -218,12 +354,9 @@ addEventListener('pageshow', e => {
     history.innerHTML = '';
     input.value = '';
     typed.textContent = '';
+    input.disabled = false;
     input.focus();
-    addArt('banner');
-    addLine('WELCOME, GUEST.');
-    addLine('TYPE "HELP" FOR COMMANDS.');
-    if (matchMedia('(pointer: coarse)').matches) addLine('TAP THE SCREEN TO TYPE.');
-    trim();
+    showHome();
   }
 });
 </script>

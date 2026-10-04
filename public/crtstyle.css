@@ -3,7 +3,7 @@ body.background {
   background: #000;
   display: grid;
   place-items: center;
-  height: var(--app-h, 100dvh);   /* the script keeps this equal to the visible area (keyboard-aware) */
+  height: var(--app-h, 100dvh);   
   overflow: hidden;
   overscroll-behavior: none;
   perspective: 1400px;
@@ -13,14 +13,14 @@ body.background {
   width: 100vw;
   height: var(--app-h, 100dvh);
   box-sizing: border-box;
-  padding: 2.5vmin;               /* vmin = 1% of the smaller screen side, so the bezel stays even */
+  padding: 2.5vmin;              
   border-radius: 0;
-  container-type: inline-size;    /* children can size from the monitor's width */
+  container-type: inline-size;    
   background: linear-gradient(145deg, #4a4f4a, #2a2d2a 50%, #1a1c1a);
   box-shadow:
-    inset 0 0 0 2px #5c615c,             /* thin highlight on the outer edge */
-    inset 0 0 30px rgba(0, 0, 0, .6),    /* shading toward the inside */
-    0 20px 60px rgba(0, 0, 0, .8);       /* drop shadow on the table */
+    inset 0 0 0 2px #5c615c,             
+    inset 0 0 30px rgba(0, 0, 0, .6),   
+    0 20px 60px rgba(0, 0, 0, .8);     
 }
 
 /* the glass: tube shape and depth */
@@ -42,7 +42,7 @@ body.background {
 /* the picture: this layer gets warped */
 .screen {
   position: absolute;
-  inset: -3%;                      /* bigger than the glass so the warp's empty edge band is clipped off */
+  inset: -3%;                     
   box-sizing: border-box;
   padding: 3cqw 0;
   filter: url(#dome);
@@ -112,16 +112,16 @@ body.background {
   height: 100%;
   box-sizing: border-box;
   padding: 2cqw;
-  overflow: hidden;              /* anything that doesn't fit is clipped, and the script trims it */
+  overflow: hidden;            
   text-align: left;
   cursor: text;
-  font-size: max(14px, 2.2cqw);  /* same as before on desktop, never below 14px on a phone */
+  font-size: max(14px, 2.2cqw);  
   line-height: 1.3;
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;    /* no double-tap zoom */
+  touch-action: manipulation;   
 }
 
-.history { }                     /* just a stack above the prompt */
+.history { }               
 .history div { white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .prompt {
@@ -146,22 +146,22 @@ body.background {
 .capture {
   position: absolute;
   left: 0;
-  top: 0;                /* at the top, mobile browsers never scroll the page to reveal it */
+  top: 0;                
   width: 1px;
   height: 1px;
   opacity: 0;
   border: 0;
   padding: 0;
-  font-size: 16px;       /* anything smaller makes iOS zoom in when the input is focused */
+  font-size: 16px;      
 }
 
 .history .art {
-  white-space: pre;      /* never wrap, keep every space */
-  font-size: 1.1cqw;     /* smaller than the normal text */
+  white-space: pre;     
+  font-size: 1.1cqw;    
   line-height: 1.15;
   overflow: hidden;
 }
-.art-small { display: none; }   /* plain-text banner, shown on phones only */
+.art-small { display: none; }  
 
 .tlink {
   font: inherit;
@@ -179,13 +179,48 @@ body.background {
   text-shadow: none;
   outline: none;
 }
-/* the box around real links, like before (use .tlink instead of a.tlink to box the buttons too) */
-a.tlink {
-  border: 2px solid currentColor;
-  padding: .1em .6em;
+/* the box around real links, */
+ /* a.tlink { border: 2px solid currentColor; padding: .1em .6em; margin-top: .5rem; display: inline-block; }
+*/
+
+
+/* startup animation */
+.flash {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: #d8ffe0;
+  opacity: 0;
+}
+.flash.go { animation: flash .5s ease-out; }
+@keyframes flash {
+  0%   { opacity: 0; }
+  10%  { opacity: .95; }
+  100% { opacity: 0; }
 }
 
-/* hover only where a real hover exists, so a tap doesn't leave a button stuck highlighted */
+/* flicker like a heating coil; steps(1) makes each change a hard jump, not a fade */
+.terminal.warmup { animation: warmup 1.8s steps(1, end) 1; }
+@keyframes warmup {
+  0%   { opacity: .15; }
+  6%   { opacity: 1; }
+  9%   { opacity: .2; }
+  13%  { opacity: .9; }
+  16%  { opacity: .3; }
+  20%  { opacity: 1; }
+  26%  { opacity: .55; }
+  29%  { opacity: 1; }
+  38%  { opacity: .7; }
+  40%  { opacity: 1; }
+  52%  { opacity: .85; }
+  54%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+
+
+
 @media (hover: hover) {
   .tlink:hover {
     background: #33ff55;
@@ -194,15 +229,15 @@ a.tlink {
   }
 }
 
-/* ---------- phones and touch screens (keep these last) ---------- */
+
 @media (max-width: 700px), (pointer: coarse) {
   .screen {
-    filter: none;       /* drop the SVG dome warp */
-    inset: 0;           /* the oversize layer was only there to hide the warp's edge band */
-    text-shadow: 0 0 2px #33ff55, 0 0 8px rgba(51, 255, 85, .6);   /* lighter glow */
+    filter: none;      
+    inset: 0;           
+    text-shadow: 0 0 2px #33ff55, 0 0 8px rgba(51, 255, 85, .6);   
   }
-  .crt::after { animation: none; }   /* static scanlines, easier on the battery */
-  .crt { border-radius: 5vmin; }     /* the 6% / 10% corners are huge on a tall screen */
+  .crt::after { animation: none; }  
+  .crt { border-radius: 5vmin; }     
 
   /* let long commands wrap instead of running off the edge */
   .prompt { display: block; white-space: normal; }
@@ -213,3 +248,5 @@ a.tlink {
   .history .art { display: none; }
   .history .art-small { display: block; font-weight: bold; letter-spacing: .1em; }
 }
+
+

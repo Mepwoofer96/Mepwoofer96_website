@@ -76,6 +76,11 @@
                      \ \_\                                                                                               
                       \/_/                                                                                               
 </script>
+<script type="text/plain" id="banner-small">
+░█▄█░█▀▀░█▀█░█░█░█▀█░█▀█░█▀▀░█▀▀░█▀▄░▄▀▄░▄▀▀░░░░█▀▀░█▀█░█▄█
+░█░█░█▀▀░█▀▀░█▄█░█░█░█░█░█▀▀░█▀▀░█▀▄░░▀█░█▀▄░░░░█░░░█░█░█░█
+░▀░▀░▀▀▀░▀░░░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀░▀░▀░▀▀░░░▀░░▀░░▀▀▀░▀▀▀░▀░▀
+</script>
 <script>
   const term    = document.getElementById('term');
   const history = document.getElementById('history');
@@ -137,6 +142,7 @@ function addArt(id) {
   const box = document.createElement('div');
   box.className = 'art';
   box.textContent = document.getElementById(id).textContent.replace(/^\n|\s+$/g, '');
+  small.textContent = document.getElementById('banner-small').textContent.replace(/^\n|\s+$/g, '');
   history.appendChild(box);
 
   const small = document.createElement('div');
@@ -270,11 +276,12 @@ const helps ={
   'cat': ['cat is used in conjunction with ls','Use it as cat "file" after finding the files with the function "ls" '],
   'ls': ['Shows all of the files in the current directory'],
   'start': ['Shows the startup screen'],
-  'art': ['Prints the startup art of "mepwoofer96.com'],
+  'art': ['Prints the startup art of "mepwoofer96.com"'],
   'links': ['Prints links to the other pages of the website'],
   'reboot':['Shows the boot animation'],
   'games' :['lists games','type in run "name of game" to play game '],
   'run'   :['Runs files, run "name of file"'],
+  'portfolio':['Goes straight to the portfolio page']
 }
 
 // word typed -> lines to print
@@ -323,7 +330,7 @@ input.addEventListener('keydown', e => {
       if (h) h.forEach(addLine);
       else{ 
       addLine('AVAILABLE COMMANDS:');
-      addLine('  help   about   date   clear   page   cat   ls   start   art   links   games   reboot   run');
+      addLine('  help   about   date   clear   page   cat   ls   start   art   links   games   reboot   run  portfolio');
       addLine('Type "help name" to find out more about the function "name"')
       }
   } else if (name === 'run') {

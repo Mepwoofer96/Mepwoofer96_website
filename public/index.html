@@ -89,7 +89,7 @@
   input.focus();
 
   input.addEventListener('input', () => {
-    typed.textContent = input.value;                      // mirror the text next to the cursor
+    typed.textContent = input.value;                      
   });
 
 // remove the oldest lines until everything fits on screen
@@ -99,12 +99,12 @@ function trim() {
   }
 }
 
-addEventListener('resize', trim);   // shrinking the window drops lines too
+addEventListener('resize', trim);  
 
 // keep the whole terminal above the on-screen keyboard
 if (window.visualViewport) {
   const fit = () => {
-    if (visualViewport.scale > 1) return;            // ignore pinch-zoom
+    if (visualViewport.scale > 1) return;           
     document.documentElement.style.setProperty('--app-h', visualViewport.height + 'px');
     scrollTo(0, 0);
     trim();
@@ -251,7 +251,7 @@ const files = {
 const games = {
   'dungeon-crawler.exe':   'games/dungeon-crawler.html',
   'home.exe':              'games/home_advanced.html',
-  'shadows-of-deceit.exe': 'games/shadows-of-deceit.html',
+  'shadows-of-deceit.exe': 'games/Shadows-of-Deceit.html',
   'your-big-day.exe':      'games/your_big_day.html',
 };
 
@@ -350,7 +350,7 @@ input.addEventListener('keydown', e => {
 });
 
 addEventListener('pageshow', e => {
-  if (e.persisted) {              // true only when the page came back from the cache
+  if (e.persisted) {              
     history.innerHTML = '';
     input.value = '';
     typed.textContent = '';

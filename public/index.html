@@ -148,7 +148,18 @@ function addArt(id) {
 
   const small = document.createElement('div');
   small.className = 'art-small';
-  small.textContent = document.getElementById('banner-small').textContent.replace(/^\n|\s+$/g, '');
+  const rows = document.getElementById('banner-small').textContent
+    .replace(/^\n|\s+$/g, '').split('\n');
+  const width = Math.max(...rows.map(r => r.length));
+  for (const r of rows) {
+    const line = document.createElement('div');
+    for (const ch of r.padEnd(width)) {
+      const cell = document.createElement('span');
+      cell.textContent = ch;
+      line.appendChild(cell);
+    }
+    small.appendChild(line);
+  }
   history.appendChild(small);
 }
 

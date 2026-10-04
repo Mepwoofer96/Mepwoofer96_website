@@ -277,7 +277,10 @@ body.background {
   overflow: hidden;
   text-shadow: 0 0 2px #33ff55;      /* tight glow so the block shapes stay readable */
 }
+.history .art-small div { white-space: pre; overflow-wrap: normal; height: 1em; }
+.art-small span { display: inline-block; width: 1ch; }
 }
+
 
 
 

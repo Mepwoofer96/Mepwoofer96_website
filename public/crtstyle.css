@@ -183,6 +183,24 @@ body.background {
  /* a.tlink { border: 2px solid currentColor; padding: .1em .6em; margin-top: .5rem; display: inline-block; }
 */
 
+@font-face {
+    font-family: eight_segment;
+    src: url(Seven_segment.ttf);
+}
+
+.clock{
+  font-family: eight_segment;
+  font-size: 2.5vw;     
+}
+.clock2{
+  font-family: eight_segment;
+  font-size: 20vw;  
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  text-align: center;   
+  
+}
 
 /* startup animation */
 .flash {
@@ -193,6 +211,7 @@ body.background {
   background: #d8ffe0;
   opacity: 0;
 }
+
 .flash.go { animation: flash .5s ease-out; }
 @keyframes flash {
   0%   { opacity: 0; }
@@ -259,5 +278,6 @@ body.background {
   text-shadow: 0 0 2px #33ff55;      /* tight glow so the block shapes stay readable */
 }
 }
+
 
 

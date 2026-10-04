@@ -77,6 +77,7 @@
                       \/_/                                                                                               
 </script>
 <script type="text/plain" id="banner-small">
+
               ▐▘    ▄▖▄▖         
 ▛▛▌█▌▛▌▌▌▌▛▌▛▌▜▘█▌▛▘▙▌▙▖  ▛▘▛▌▛▛▌
 ▌▌▌▙▖▙▌▚▚▘▙▌▙▌▐ ▙▖▌ ▄▌▙▌▗ ▙▖▙▌▌▌▌
@@ -280,13 +281,27 @@ const helps ={
   'reboot':['Shows the boot animation'],
   'games' :['lists games','type in run "name of game" to play game '],
   'run'   :['Runs files, run "name of file"'],
-  'portfolio':['Goes straight to the portfolio page']
+  'portfolio':['Goes straight to the portfolio page'],
+  'clock':['Goes to a clock page with a 8 segment display'],
+}
+
+function date(){
+  label = new Date().toLocaleString();
+  const row = document.createElement('div');
+  row.className = 'clock';
+  row.textContent =label;
+  history.appendChild(row);
 }
 
 // word typed -> lines to print
 const commands = {
   about: ['Mepwoofer96 Terminal v0.5.1', 'I forgor'],
-  date:  () => [new Date().toLocaleString()],   
+  date:  () => [new Date().toLocaleString()], 
+  date2: () => date(), 
+  clock: () => {
+    addLine('OPENING CLOCK...');
+    setTimeout(() => { window.location.href = 'clock_8.html'; }, 600);
+  }, 
   page: () => window.location.href = "test.html",
   ls: () => Object.keys(files),
   art: () => addArt('banner'),
@@ -329,14 +344,14 @@ input.addEventListener('keydown', e => {
       if (h) h.forEach(addLine);
       else{ 
       addLine('AVAILABLE COMMANDS:');
-      addLine('  help   about   date   clear   page   cat   ls   start   art   links   games   reboot   run  portfolio');
+      addLine('  help   about   date   clear   page   cat   ls   start   art   links   games   reboot   run   portfolio   clock');
       addLine('Type "help name" to find out more about the function "name"')
       }
   } else if (name === 'run') {
     if (Object.hasOwn(games, args[0])) launch(args[0]);
     else addLine('run: ' + (args[0] || '') + ': NO SUCH PROGRAM');
 
-} else if (Object.hasOwn(games, name)) {  
+  } else if (Object.hasOwn(games, name)) {  
   launch(name);
 
   } else if (name in commands) {
@@ -364,6 +379,7 @@ addEventListener('pageshow', e => {
     showHome();
   }
 });
+
 </script>
 </body>
 </html>

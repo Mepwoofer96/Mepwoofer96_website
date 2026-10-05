@@ -231,6 +231,8 @@ body.background {
 .gap { display: inline-block; width: .5em; }    /* the space before AM/PM */
 
 
+.image { filter: url(#bloom); }
+
 /* startup animation */
 .flash {
   position: absolute;

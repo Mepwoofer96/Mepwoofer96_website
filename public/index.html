@@ -31,6 +31,29 @@
     </filter>
   </svg>
 
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="bloom" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+    <!-- tight halo: blur 3, boost 1 -->
+    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b2"/>
+    <feComponentTransfer in="b1" result="soft">
+      <feFuncR type="linear" slope="1"/><feFuncG type="linear" slope="1"/>
+      <feFuncB type="linear" slope="1"/><feFuncA type="linear" slope="1"/>
+    </feComponentTransfer>
+
+    <!-- wide halo: blur 9, boost 2 -->
+    <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="b2"/>
+    <feComponentTransfer in="b2" result="halo">
+      <feFuncR type="linear" slope="2"/><feFuncG type="linear" slope="2"/>
+      <feFuncB type="linear" slope="2"/><feFuncA type="linear" slope="2"/>
+    </feComponentTransfer>
+
+    <!-- screen(img, screen(soft, halo)) -->
+    <feBlend in="soft" in2="halo" mode="screen" result="glow"/>
+    <feBlend in="SourceGraphic" in2="glow" mode="screen"/>
+  </filter>
+</svg>
+
+
 <script>
   const map = document.getElementById('domeMap');
   const disp = document.getElementById('domeDisp');
@@ -82,6 +105,35 @@
 ▛▛▌█▌▛▌▌▌▌▛▌▛▌▜▘█▌▛▘▙▌▙▖  ▛▘▛▌▛▛▌
 ▌▌▌▙▖▙▌▚▚▘▙▌▙▌▐ ▙▖▌ ▄▌▙▌▗ ▙▖▙▌▌▌▌
      ▌                           
+</script>
+<script type="text/plain" id="cheese">
+                                                     
+                                                                                     
+                                      @@@@@@@@@@. .@@@@@@@@@@@                       
+                                 @@@@@@@@@@@            @@@@@@@@@@                   
+                             @@@@@@@@@@@. ::     .          @@@@@@@@@@               
+                         @@@@@@@@@@   ..:==.      .             @@@@@@@@@@           
+                    @@@@@@@@@@#@#=     .-**=.    .                ..@@@@@@@@@@       
+                 @@@@@@@@@@ --..:=:   .+#%*+-                    . -    @@@@@@@@@    
+            @@@@@@@@@@      -*%@%+    :***##-           :+**+-. .:: :-:::::=%@@@@    
+       @@@@@@@@@@@@                    -*#+:.:...::--==#@@@@#=:.=+**#*****#####@@    
+    @@@@@@@@@*@@#*- .=**#***####*#@@@@%********########+:: +%-:#%#**++=-:::.  +@@    
+    @@@@%%####+-=%=@@@##%%@@@%#%@@@@@@@@+========---:::  :-+=+#+:            .#@@    
+    @@==+**=..:..#@@@#=        -##+---=- +####+.       .:  :++-.             :@@@    
+    @@=+=       .+#+:-*:.      *#....=# @@@@@@%+                             -@@     
+    @@@==.    :::--:: *-.      =%*=-#%*+@=....@*                            .#@@     
+    @@@-=:    ::-:.=+*+         =#%%#=:#@*=*@@@-                            .@@@     
+     @@-=-     :=++*+=.           --. :**- =**=                           ..-@@      
+     @@---       ::                   *@@#+#@+    -=:                     . =@@      
+     @@:--                            *@*:-#@+  -@@@@:                     :*@@      
+     @@:--                            .*@@@@+   **.-*==:                 @@@@@@      
+     @@:--                            ...=-.:...-+%+@@@%.  :#@@@@@@@@@@@@@@@@@@      
+     @@---          ..        .......:@@@@@@ %@@@@@@@@@@@@@@@@@@@@@@@@@@@@@          
+     @@-=-  ....:::..:.:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*@@@@@@@@                       
+     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#  @@@@@                                      
+     @@@@@@@@@@@@@@@@@@@@*                                                           
+                                                                                     
+
 </script>
 <script>
   const term    = document.getElementById('term');
@@ -162,6 +214,17 @@ function addArt(id) {
   }
   history.appendChild(small);
 }
+
+  function addImage(src,name,glow = false) {
+    const row = document.createElement('div');
+    const img = document.createElement('img');
+    img.className = 'image';
+    img.alt = name;
+    img.addEventListener('load', trim);     
+    img.src = src;
+    row.appendChild(img);
+    history.appendChild(row);
+  }
 
 
 // ---------- startup sequence ----------
@@ -338,7 +401,9 @@ const commands = {
   radio:() =>{
     addLine('STARTING RADIO...');
     setTimeout(() => {window.location.href = 'https://homedebian.tail531175.ts.net/109.2';}, 600);
-  }
+  },
+  cheese:() => addArt('cheese'),
+  fox:() => addImage('images/fox-no.gif','fox',true),
 };
 
 input.addEventListener('keydown', e => {
@@ -367,7 +432,7 @@ input.addEventListener('keydown', e => {
       if (h) h.forEach(addLine);
       else{ 
       addLine('AVAILABLE COMMANDS:');
-      addLine('  help   about   date   clear   cat   ls   start   art   links   games   reboot   run   portfolio   clock   programs   radio');
+      addLine('  help   about   date   clear   cat   ls   start   art   links   games   reboot   run   portfolio   clock   programs   radio   cheese   fox');
       addLine('Type "help name" to find out more about the function "name"')
       }
   } else if (name === 'run') {

@@ -251,20 +251,25 @@ const files = {
   'about.txt':   ['Mepwoofer96 Terminal v0.5.1', 'I forgor'],
   'contact.txt': ['EMAIL: tommybosjr@gmail.com'],
   'projects/':   [null],                      
-  'games/': ['dungeon-crawler.exe','home.exe','shadows-of-deceit.exe','your-big-day.exe']
+  'games/': ['dungeon-crawler.exe','home.exe','shadows-of-deceit.exe','your-big-day.exe'],
+  'programs/':['eccentricity.exe','clock'],
 };
 
-const games = {
+const programs = {
   'dungeon-crawler.exe':   'games/dungeon-crawler.html',
   'home.exe':              'games/home_advanced.html',
   'shadows-of-deceit.exe': 'games/Shadows-of-Deceit.html',
   'your-big-day.exe':      'games/your_big_day.html',
+  'eccentricity.exe':      'programs/eccentricity.html',
+  'clock':                 'programs/clock_8.html',
 };
 
+
+
 function launch(name) {
-  addLine('To exit game press the back button on your browser')
+  addLine('To exit program press the back button on your browser')
   addLine('OPENING ' + name + '...');
-  setTimeout(() => { window.location.href = games[name]; }, 2000);
+  setTimeout(() => { window.location.href = programs[name]; }, 2000);
 }
 
 const helps ={
@@ -280,6 +285,7 @@ const helps ={
   'links': ['Prints links to the other pages of the website'],
   'reboot':['Shows the boot animation'],
   'games' :['lists games','type in run "name of game" to play game '],
+  'programs' :['lists programs','type in run "name of program" to start program '],
   'run'   :['Runs files, run "name of file"'],
   'portfolio':['Goes straight to the portfolio page'],
   'clock':['Goes to a clock page with a 8 segment display'],
@@ -300,14 +306,14 @@ const commands = {
   date2: () => date(), 
   clock: () => {
     addLine('OPENING CLOCK...');
-    setTimeout(() => { window.location.href = 'clock_8.html'; }, 600);
+    setTimeout(() => { window.location.href = '/programs/clock_8.html'; }, 600);
   }, 
-  page: () => window.location.href = "test.html",
   ls: () => Object.keys(files),
   art: () => addArt('banner'),
   links: () => {
     addLine('SELECT A DESTINATION:');
     addLink('PORTFOLIO', 'portfolio.html');                       // a string makes a real link
+    addLink('CLOCK','programs/clock_8.html');
     addLink('SAY HELLO', () => addLine('HELLO, VISITOR.'));       // a function runs on click
   },
   portfolio: () => {
@@ -316,6 +322,7 @@ const commands = {
   },
   reboot:() => {boot();},
   games: ['dungeon-crawler.exe   home.exe   shadows-of-deceit.exe   your-big-day.exe','Type run "name of game" to play a game'],
+  programs:['eccentricity.exe'],
 };
 
 input.addEventListener('keydown', e => {
@@ -344,14 +351,14 @@ input.addEventListener('keydown', e => {
       if (h) h.forEach(addLine);
       else{ 
       addLine('AVAILABLE COMMANDS:');
-      addLine('  help   about   date   clear   page   cat   ls   start   art   links   games   reboot   run   portfolio   clock');
+      addLine('  help   about   date   clear   cat   ls   start   art   links   games   reboot   run   portfolio   clock   programs');
       addLine('Type "help name" to find out more about the function "name"')
       }
   } else if (name === 'run') {
-    if (Object.hasOwn(games, args[0])) launch(args[0]);
+    if (Object.hasOwn(programs, args[0])) launch(args[0]);
     else addLine('run: ' + (args[0] || '') + ': NO SUCH PROGRAM');
 
-  } else if (Object.hasOwn(games, name)) {  
+  } else if (Object.hasOwn(programs, name)) {  
   launch(name);
 
   } else if (name in commands) {

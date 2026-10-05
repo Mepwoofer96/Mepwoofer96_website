@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbit Calculator</title>
+<link rel="stylesheet" href="https://pyscript.net/releases/2025.3.1/core.css">
+<link rel="stylesheet" href="../crtstyle.css">
+<script type="module" src="https://pyscript.net/releases/2025.3.1/core.js"></script>
+<style>
+
+  .plot {
+    display: block;
+    max-width: 100%;
+    max-height: calc(var(--app-h, 100dvh) * .55);
+    margin: .4em 0;
+  }
+</style>
+</head>
+
+<body class="background">
+
+  <div class="monitor">
+    <div class="crt">
+      <div class="screen">
+        <div class="terminalECC" id="term">
+          <div class="history" id="history"></div>
+          <div class="prompt"><span class="ps">:&gt;</span><span class="typed" id="typed"></span><span class="cursor"></span><input id="input" class="capture" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="terminal input"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="dome" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+      <feImage id="domeMap" preserveAspectRatio="none" result="map"/>
+      <feDisplacementMap id="domeDisp" in="SourceGraphic" in2="map" scale="100" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+
+<script>
+  const map = document.getElementById('domeMap');
+  const disp = document.getElementById('domeDisp');
+  const screenEl = document.querySelector('.screen');
+  const STRENGTH = 0.07;
+
+  function buildDome() {
+    const w = screenEl.clientWidth, h = screenEl.clientHeight, m = Math.max(w, h);
+    const stops = (amp, ch) => Array.from({ length: 17 }, (_, i) => {
+      const u = i / 8 - 1;
+      const v = Math.round(255 * (0.5 + 0.5 * amp * u ** 3));
+      const rgb = ch === 'r' ? `${v},0,0` : `0,${v},0`;
+      return `<stop offset="${i / 16}" stop-color="rgb(${rgb})"/>`;
+    }).join('');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256">
+      <defs>
+        <linearGradient id="x" x1="0" y1="0" x2="1" y2="0">${stops(w / m, 'r')}</linearGradient>
+        <linearGradient id="y" x1="0" y1="0" x2="0" y2="1">${stops(h / m, 'g')}</linearGradient>
+      </defs>
+      <rect width="256" height="256" fill="#000"/>
+      <rect width="256" height="256" fill="url(#x)"/>
+      <rect width="256" height="256" fill="url(#y)" style="mix-blend-mode:screen"/>
+    </svg>`;
+    map.setAttribute('href', 'data:image/svg+xml,' + encodeURIComponent(svg));
+    disp.setAttribute('scale', 2 * STRENGTH * m);
+  }
+  buildDome();
+  addEventListener('resize', buildDome);
+</script>
+
+<script type="py" config='{"packages": ["numpy", "matplotlib"]}'>
+import io, base64, json
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")                  # draw to memory; there is no plt.show() in the browser
+import matplotlib.pyplot as plt
+from dataclasses import dataclass
+from PIL import Image, ImageFilter, ImageChops    # comes with matplotlib; used for the bloom
+from pyscript import window
+from pyodide.ffi import create_proxy
+
+GREEN = "#33ff55"
+plt.rcParams["font.family"] = "monospace"    # DejaVu Sans Mono, the monospace font matplotlib ships with
+
+@dataclass
+class Body:
+    mu: float
+    r: float
+    mass: float
+    a: float
+    color: str
+
+bodies = {
+    "sun":     Body(mu=132712440000, r=696000, mass=1.988416*10**30,    a=0,            color='xkcd:lemon yellow'),
+    "earth":   Body(mu=398600,       r=6378,   mass=5.97*10**24,        a=1,            color='darkblue'),
+    "moon":    Body(mu=4902.8,       r=1737,   mass=7.346*10**22,       a=0.0025718815, color='0.8'),
+    "mercury": Body(mu=22032,        r=2440,   mass=3.3*10**23,         a=.3871,        color='xkcd:tan'),
+    "venus":   Body(mu=324860,       r=6052,   mass=4.87*10**24,        a=.7233,        color='xkcd:goldenrod'),
+    "mars":    Body(mu=42828,        r=3390,   mass=6.42*10**23,        a=1.5273,       color='xkcd:dirty orange'),
+    "saturn":  Body(mu=37941000,     r=58232,  mass=5.68*10**26,        a=9.5388,       color='xkcd:brownish yellow'),
+    "jupiter": Body(mu=126713000,    r=69911,  mass=1.9*10**26,         a=5.2,       color='xkcd:brownish yellow'),
+    "uranus":  Body(mu=5794500,      r=25362,  mass=8.68*10**25,        a=19.1914,      color='xkcd:purplish blue'),
+    "neptune": Body(mu=6836500,      r=24622,  mass=1.02*10**26,        a=30.0611,      color='xkcd:ultramarine'),
+    "pluto":   Body(mu=981.6,        r=1188,   mass=1.3*10**22,         a=39.5294,      color='xkcd:grey'),
+}
+
+
+
+def au_to_km(au):
+    return au*1.495979*10**8
+
+def soi(mass2, mass1="sun"):
+    b1 = bodies[mass1]
+    b2 = bodies[mass2]
+    return au_to_km(b2.a)*(b2.mass/b1.mass)**(2/5)
+
+def vis_viva(mu, r, a):
+    return np.sqrt(mu * (2/r - 1/a))
+
+def orbital_period(planet):
+    b = bodies[planet]
+    return 2 * 3.14159 * (b.r**3 / b.mu)**0.5
+
+def calc_orbit_e(planet, e, r_p):
+    b = bodies[planet]
+    r_p = r_p + b.r
+    p = r_p*(1+e)
+    if planet != "sun":
+        r_soi = soi(planet)
+    else:
+        r_soi = au_to_km(bodies["pluto"].a)
+
+    if e < 1:
+        theta_star = np.linspace(0, 2*np.pi, 361)
+        r_a = p/(1-e)
+    else:
+        arg = ((p/r_soi) - 1)/e
+        if arg > 1:
+            raise ValueError("periapsis is outside the sphere of influence")
+        soi_max = np.arccos(arg)
+        k = .88 if e == 1 else .90
+        theta_star = np.linspace(-soi_max*k, soi_max*k, 361)
+        r_a = 0                        
+
+    r = p/(1+e*np.cos(theta_star))
+    x = r*np.cos(theta_star)
+    y = r*np.sin(theta_star)
+
+    if e != 1:
+        a = p / (1-e**2)
+        v_max = np.sqrt(b.mu*((2/r_p)-(1/a)))
+    else:
+        v_max = np.sqrt(b.mu*(2/r_p))
+
+    return x, y, v_max, r_a
+
+def transfer_orbit(r_p, r_a, planet):
+    b = bodies[planet]
+    r_p += b.r
+    if r_a < r_p:
+        r_p, r_a = r_a, r_p
+
+    a = (r_p + r_a) / 2
+    e = r_a / a - 1
+    p = a * (1 - e**2)
+
+    theta_star = np.linspace(0, 2*np.pi, 361)
+    r = p / (1 + e*np.cos(theta_star))
+    x = r*np.cos(theta_star)
+    y = r*np.sin(theta_star)
+    v_a = np.sqrt(((2*b.mu)/r_a)-(b.mu/a))
+    v_p = np.sqrt(((2*b.mu)/r_p)-(b.mu/a))
+    return x, y, e, r_p, v_a, v_p
+
+def transfer_dv(planet, r_a1, r_a2, r_p1, r_p2):
+    mu = bodies[planet].mu
+    r_start, r_end = r_p1, r_a2
+    a1 = (r_p1+r_a1)/2
+    a2 = (r_p2+r_a2)/2
+    at = (r_start+r_end)/2
+    dv1 = abs(vis_viva(mu, r_start, at) - vis_viva(mu, r_start, a1))
+    dv2 = abs(vis_viva(mu, r_end,   a2) - vis_viva(mu, r_end,   at))
+    return dv1, dv2, dv1 + dv2
+
+
+
+def new_figure(title):
+    fig, ax = plt.subplots(figsize=(7, 5), facecolor="none")
+    ax.set_facecolor("none")
+    ax.set_aspect("equal", adjustable="box")
+    for s in ax.spines.values():
+        s.set_color(GREEN)
+    ax.tick_params(colors=GREEN)
+    ax.set_xlabel("km", color=GREEN)
+    ax.set_ylabel("km", color=GREEN)
+    ax.set_title(title, color=GREEN)
+    return fig, ax
+
+def plot_1planet(planet, ax):
+    b = bodies[planet]
+    ax.add_patch(plt.Circle((0, 0), radius=b.r, facecolor=b.color, edgecolor=GREEN, linewidth=1))
+
+def plot_orbit(ax, x, y, e, r_p, color=GREEN, style="-"):
+    ax.plot(x, y, linewidth=1.6, color=color, linestyle=style)
+    ax.text(x[0]*1.001, y[0]*1.15, "PE", fontsize=12, color=GREEN)
+    ax.add_patch(plt.Circle((x[0], y[0]), radius=r_p*.05, facecolor="xkcd:hot pink"))
+    if e < 1:
+        ax.text(x[180]*.999, y[180]*1.15, "AP", fontsize=12, color=GREEN)
+        ax.add_patch(plt.Circle((x[180], y[180]), radius=r_p*.05, facecolor="xkcd:lime green"))
+
+def bloom(img, tight=3, wide=9, k_tight=1, k_wide=2):
+    """Fake phosphor bloom: blur the image two ways, boost the blurs, and add them back on top."""
+    boost = lambda im, k: im.point(lambda v: min(255, int(v * k)))
+    soft = boost(img.filter(ImageFilter.GaussianBlur(tight)), k_tight)   # tight halo
+    halo = boost(img.filter(ImageFilter.GaussianBlur(wide)), k_wide)     # wide, soft halo
+    return ImageChops.screen(img, ImageChops.screen(soft, halo))
+
+def to_url(fig, ax):
+    ax.autoscale_view()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=110, facecolor="black")           # bloom needs a black base
+    plt.close(fig)
+    buf.seek(0)
+    lit = np.asarray(bloom(Image.open(buf).convert("RGB")), dtype=float) / 255
+    alpha = lit.max(axis=2)                                              # then black becomes see-through
+    rgb = np.divide(lit, alpha[..., None], out=np.zeros_like(lit), where=alpha[..., None] > 0)
+    out = Image.fromarray((np.dstack([rgb, alpha]) * 255).astype("uint8"))
+    buf = io.BytesIO()
+    out.save(buf, format="PNG")
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
+
+def run_orbit(planet, e, r_p):
+    x, y, v, _ = calc_orbit_e(planet, e, r_p)
+    lines = []
+    if planet != "sun":
+        lines.append(f"SOI = {soi(planet):,.0f} KM")
+    lines.append(f"V_MAX = {v:.3f} KM/S")
+    lines.append(f"PLANET ORBITAL PERIOD = {orbital_period(planet):,.0f} S")
+    fig, ax = new_figure(f"{planet.upper()}   e = {e}")
+    plot_orbit(ax, x, y, e, r_p)
+    plot_1planet(planet, ax)
+    return lines, to_url(fig, ax)
+
+def run_transfer(planet, e1, r_p1, e2, r_p2):
+    x1, y1, v1, r_a1 = calc_orbit_e(planet, e1, r_p1)
+    x2, y2, v2, r_a2 = calc_orbit_e(planet, e2, r_p2)
+    xt, yt, et, r_pt, v_at, v_pt = transfer_orbit(r_p1, r_a2, planet)
+    # NOTE: r_p1 / r_p2 here do not include the planet radius, but r_a1 / r_a2 do 
+    dv1, dv2, deltav = transfer_dv(planet, r_a1, r_a2, r_p1, r_p2)
+    lines = []
+    if planet != "sun":
+        lines.append(f"SOI = {soi(planet):,.0f} KM")
+    lines += [f"DELTA-V 1 = {dv1:.3f} KM/S", f"DELTA-V 2 = {dv2:.3f} KM/S", f"TOTAL DELTA-V = {deltav:.3f} KM/S"]
+    fig, ax = new_figure(f"{planet.upper()}   TRANSFER")
+    plot_orbit(ax, x1, y1, e1, r_p1)
+    plot_orbit(ax, x2, y2, e2, r_p2, color="#9dffb0")
+    plot_orbit(ax, xt, yt, et, r_pt, color="#ffb000", style="--")
+    plot_1planet(planet, ax)
+    return lines, to_url(fig, ax)
+
+def run(kind, *args):
+    """Called from the terminal. Always returns a JSON string."""
+    try:
+        if kind == "planets":
+            return json.dumps({"lines": [", ".join(bodies)]})
+        planet = str(args[0]).lower()
+        if planet not in bodies:
+            raise ValueError(f"UNKNOWN PLANET '{planet}' (TYPE planets)")
+        nums = [float(a) for a in args[1:]]
+        if kind == "orbit":
+            lines, img = run_orbit(planet, *nums)
+        elif kind == "transfer":
+            lines, img = run_transfer(planet, *nums)
+        else:
+            raise ValueError("UNKNOWN COMMAND")
+        return json.dumps({"lines": lines, "img": img})
+    except Exception as err:
+        return json.dumps({"error": str(err)})
+
+window.orbitPy = create_proxy(run)
+if window.onOrbitReady:
+    window.onOrbitReady()
+</script>
+
+<!-- the terminal -->
+<script>
+  const term    = document.getElementById('term');
+  const history = document.getElementById('history');
+  const typed   = document.getElementById('typed');
+  const input   = document.getElementById('input');
+
+  term.addEventListener('click', () => input.focus());
+  input.focus();
+  input.addEventListener('input', () => { typed.textContent = input.value; });
+
+  function trim() {
+    while (history.firstChild && term.scrollHeight > term.clientHeight) {
+      history.removeChild(history.firstChild);
+    }
+  }
+  addEventListener('resize', trim);
+
+  if (window.visualViewport) {
+    const fit = () => {
+      if (visualViewport.scale > 1) return;
+      document.documentElement.style.setProperty('--app-h', visualViewport.height + 'px');
+      scrollTo(0, 0);
+      trim();
+    };
+    visualViewport.addEventListener('resize', fit);
+    fit();
+  }
+
+  function addLine(text) {
+    const line = document.createElement('div');
+    line.textContent = text;
+    history.appendChild(line);
+  }
+
+  function addPlot(src) {
+    const row = document.createElement('div');
+    const img = document.createElement('img');
+    img.className = 'plot';
+    img.alt = 'orbit plot';
+    img.addEventListener('load', trim);     
+    img.src = src;
+    row.appendChild(img);
+    history.appendChild(row);
+  }
+
+
+  function py(kind, ...args) {
+    if (!window.orbitPy) { addLine('PYTHON ENGINE STILL LOADING... TRY AGAIN IN A MOMENT.'); return; }
+    const res = JSON.parse(window.orbitPy(kind, ...args));
+    if (res.error) { addLine('ERROR: ' + res.error); return; }
+    (res.lines || []).forEach(addLine);
+    if (res.img) addPlot(res.img);
+  }
+
+  const HELP = [
+    'AVAILABLE COMMANDS:',
+    '  planets',
+    '  orbit <planet> <e> <rp>',
+    '  transfer <planet> <e1> <rp1> <e2> <rp2>',
+    '  clear',
+    '  exit',
+    'e values <3 and >=0 are normal above that it goes to fast or to slow',
+    'a e of 0 is circular a e of 1 is escaping the planet',
+    'rp = periapsis altitude in km (the planet radius is added for you)',
+    'example: orbit earth 0.3 400',
+  ];
+
+  window.onOrbitReady = () => { addLine('PYTHON ENGINE ONLINE.'); trim(); };
+  addLine('ORBIT CALCULATOR');
+  addLine('LOADING PYTHON RUNTIME... (THE FIRST LOAD CAN TAKE A WHILE)');
+  addLine('TYPE "HELP" FOR COMMANDS.');
+  if (window.orbitPy) window.onOrbitReady();
+
+  input.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+
+    const raw = input.value;
+    const [name, ...args] = raw.trim().toLowerCase().split(/\s+/);
+    input.value = '';
+    typed.textContent = '';
+    addLine(':> ' + raw);
+
+    const nums = args.slice(1).map(Number);
+    const bad = nums.some(n => !Number.isFinite(n));
+
+    if (name === 'clear') {
+      history.innerHTML = '';
+    } else if (name === 'help') {
+      HELP.forEach(addLine);
+    } else if (name === 'planets') {
+      py('planets');
+    } else if (name === 'orbit') {
+      if (args.length !== 3 || bad) addLine('USAGE: orbit <planet> <e> <rp>');
+      else py('orbit', args[0], ...nums);
+    } else if (name === 'transfer') {
+      if (args.length !== 5 || bad) addLine('USAGE: transfer <planet> <e1> <rp1> <e2> <rp2>');
+      else py('transfer', args[0], ...nums);
+    } else if (name === 'exit'){
+      addLine('EXITING ECCENTRICITY.exe...');
+      setTimeout(() => { window.location.href = '../index.html'; }, 600);
+    } else if (name) {
+      addLine('UNKNOWN COMMAND: ' + name.toUpperCase());
+      addLine('TYPE "HELP" FOR COMMANDS.');
+    }
+    trim();
+  });
+</script>
+</body>
+</html>

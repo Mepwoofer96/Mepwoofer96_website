@@ -210,13 +210,26 @@ body.background {
 }
 .clock2{
   font-family: eight_segment;
-  font-size: 20vw;  
+  font-size: 19vw;  
   display: flex;
   justify-content: center; 
   align-items: center;     
   text-align: center;   
   
 }
+.seg {
+  display: inline-flex;
+  align-items: center;
+  white-space: pre;
+}
+.cell { display: inline-grid; }        /* ghost and live character share one cell */
+.cell > span {
+  grid-area: 1 / 1;
+  justify-self: end;                   /* right-aligned, like a real display: a lit 1 uses the right-hand segments */
+}
+.cell .g { opacity: .1; text-shadow: none; }   /* the faint unlit segments */
+.gap { display: inline-block; width: .5em; }    /* the space before AM/PM */
+
 
 /* startup animation */
 .flash {

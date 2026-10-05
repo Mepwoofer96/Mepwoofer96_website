@@ -300,6 +300,7 @@ const helps ={
   'run'   :['Runs files, run "name of file"'],
   'portfolio':['Goes straight to the portfolio page'],
   'clock':['Goes to a clock page with a 8 segment display'],
+  'radio':['Opens up the radio'],
 }
 
 function date(){
@@ -334,6 +335,10 @@ const commands = {
   reboot:() => {boot();},
   games: ['dungeon-crawler.exe   home.exe   shadows-of-deceit.exe   your-big-day.exe','Type run "name of game" to play a game'],
   programs:['eccentricity.exe'],
+  radio:() =>{
+    addLine('STARTING RADIO...');
+    setTimeout(() => {window.location.href = 'https://homedebian.tail531175.ts.net/109.2';}, 600);
+  }
 };
 
 input.addEventListener('keydown', e => {
@@ -362,7 +367,7 @@ input.addEventListener('keydown', e => {
       if (h) h.forEach(addLine);
       else{ 
       addLine('AVAILABLE COMMANDS:');
-      addLine('  help   about   date   clear   cat   ls   start   art   links   games   reboot   run   portfolio   clock   programs');
+      addLine('  help   about   date   clear   cat   ls   start   art   links   games   reboot   run   portfolio   clock   programs   radio');
       addLine('Type "help name" to find out more about the function "name"')
       }
   } else if (name === 'run') {

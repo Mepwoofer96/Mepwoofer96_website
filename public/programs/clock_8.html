@@ -11,16 +11,20 @@
 
 <body class="background">
 
-  <div class="monitor">
-    <div class="crt">
-      <div class="screen">
-        <div class="terminal" id="term">
-            <h2>Current Local Time: <span class="clock2" id="clock">Loading...</span></h2>
-        </div>
+<div class="monitor">
+  <div class="crt">
+    <div class="screen">
+      <div class="terminal" id="term">
+        <h2>Current Local Time:
+          <span class="clock2">
+          <span class="seg" id="clock"></span>
+          </span>
+        </h2>
       </div>
-      <div class="flash" id="flash"></div>
     </div>
+    <div class="flash" id="flash"></div>
   </div>
+</div>
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <filter id="dome" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
@@ -65,11 +69,37 @@
   addEventListener('resize', buildDome);
 </script>
 <script>
-    function updateClock(){
-        const now = new Date()
-        document.getElementById('clock').textContent = now.toLocaleTimeString();
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
+const clockEl  = document.getElementById('clock');
+const TEMPLATE = '88:88:88 8M';        // layout: 8 = digit cell, : = colon, space = gap
+const lives = [];                      // the live-character span for each position
+
+for (const ch of TEMPLATE) {
+  if (ch === ' ') {
+    const gap = document.createElement('span');
+    gap.className = 'gap';
+    clockEl.appendChild(gap);
+    lives.push(null);
+    continue;
+  }
+  const cell = document.createElement('span');
+  cell.className = 'cell';
+  cell.innerHTML = `<span class="g">${ch}</span><span class="l"></span>`;
+  clockEl.appendChild(cell);
+  lives.push(cell.querySelector('.l'));
+}
+
+function tick() {
+  const d = new Date();
+  const h  = String(d.getHours() % 12 || 12).padStart(2, ' ');   // " 9" before 10 o'clock
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  const text = `${h}:${mm}:${ss} ${d.getHours() >= 12 ? 'PM' : 'AM'}`;
+
+  lives.forEach((el, i) => {
+    if (el) el.textContent = text[i] === ' ' ? '' : text[i];
+  });
+}
+tick();
+setInterval(tick, 1000);
 </script>
 </body>

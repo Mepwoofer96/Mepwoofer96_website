@@ -210,7 +210,7 @@ body.background {
 }
 .clock2{
   font-family: eight_segment;
-  font-size: 19vw;  
+  font-size: 18vw;  
   display: flex;
   justify-content: center; 
   align-items: center;     
@@ -231,7 +231,13 @@ body.background {
 .gap { display: inline-block; width: .5em; }    /* the space before AM/PM */
 
 
-.image { filter: url(#bloom); }
+.image { 
+    filter: url(#bloom); 
+  max-width: 100%;
+  max-height: calc(var(--app-h, 100dvh) * .55);
+  width: auto;
+  height: auto;
+}
 
 /* startup animation */
 .flash {
